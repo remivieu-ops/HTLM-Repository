@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0d1a">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleo Memory — Banking Training</title>
+</head>
+<body style="background:#0a0d1a;color:#e8edf8;margin:0">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0d1a;
+    --surface: #111627;
+    --card-back: #1a2240;
+    --border: #1f2e55;
+    --accent: #00e5b4;
+    --accent2: #7b5cf0;
+    --accent3: #ff6b35;
+    --text: #e8edf8;
+    --muted: #5a6a8a;
+    --gold: #ffd166;
+    --font-display: 'Syne', 'Trebuchet MS', 'Arial Black', system-ui, sans-serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(123,92,240,.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,229,180,.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,107,53,.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  header { text-align: center; margin-bottom: 40px; }
+
+  .logo-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-family: var(--font-mono);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    margin-bottom: 12px;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle { color: var(--muted); font-size: 15px; font-family: var(--font-mono); }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat { text-align: center; }
+
+  .stat-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .02em;
+  }
+
+  .btn-primary { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(123,92,240,.4); }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .diff-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .diff-btn {
+    padding: 6px 18px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .diff-btn.active, .diff-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(255,209,102,.05);
+  }
+
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 3px;
+    transition: width .4s ease;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  @media(max-width: 600px) {
+    .board { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  }
+
+  .card-wrap { aspect-ratio: 2/3; perspective: 800px; cursor: pointer; }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .card-wrap.flipped .card-inner,
+  .card-wrap.matched .card-inner { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 10px;
+    border: 1.5px solid var(--border);
+  }
+
+  .card-back-face { background: var(--card-back); overflow: hidden; }
+
+  .card-back-face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 10px,
+      rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 11px
+    );
+  }
+
+  .card-back-face .logo { font-size: 2rem; margin-bottom: 8px; }
+  .card-back-face .brand { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
+
+  .card-front-face {
+    background: var(--surface);
+    transform: rotateY(180deg);
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .card-icon { font-size: 2rem; line-height: 1; }
+
+  .card-category {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .card-term { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+
+  .card-definition {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .cat-ai       { background: rgba(123,92,240,.15); color: var(--accent2); border: 1px solid rgba(123,92,240,.3); }
+  .cat-budget   { background: rgba(0,229,180,.15);  color: var(--accent);  border: 1px solid rgba(0,229,180,.3); }
+  .cat-credit   { background: rgba(255,107,53,.15); color: var(--accent3); border: 1px solid rgba(255,107,53,.3); }
+  .cat-security { background: rgba(255,209,102,.15);color: var(--gold);    border: 1px solid rgba(255,209,102,.3); }
+  .cat-savings  { background: rgba(100,200,255,.15);color: #64c8ff;        border: 1px solid rgba(100,200,255,.3); }
+
+  .card-wrap.matched .card-front-face {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(0,229,180,.1), rgba(123,92,240,.1));
+  }
+
+  .card-wrap.matched .card-front-face::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--accent);
+    color: #000;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .win-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,13,26,.95);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+    backdrop-filter: blur(8px);
+  }
+
+  .win-screen.show { display: flex; animation: fadeIn .5s ease; }
+
+  @keyframes fadeIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+
+  .win-emoji { font-size: 4rem; margin-bottom: 16px; }
+
+  .win-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .win-sub {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-bottom: 32px;
+    font-size: 14px;
+    white-space: pre-line;
+    line-height: 1.7;
+  }
+
+  .hint-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    max-width: 280px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .3s;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .hint-panel.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .hint-cat {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 6px;
+  }
+
+  .hint-term { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+
+  .hint-def {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-family: var(--font-mono);
+  }
+</style>
+
+<div class="wrapper">
+  <header>
+    <div class="logo-tag">🤖 AI Banking Training</div>
+    <h1>Cleo <span>Memory</span></h1>
+    <p class="subtitle">Match the key concepts of intelligent finance</p>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-val" id="moves">0</div>
+      <div class="stat-label">Attempts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="pairs">0</div>
+      <div class="stat-label">Pairs Found</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="timer">0:00</div>
+      <div class="stat-label">Time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="score">—</div>
+      <div class="stat-label">Score</div>
+    </div>
+  </div>
+
+  <div class="diff-btns">
+    <button class="diff-btn active" data-pairs="6">Beginner (6 pairs)</button>
+    <button class="diff-btn" data-pairs="10">Intermediate (10 pairs)</button>
+    <button class="diff-btn" data-pairs="16">Expert (16 pairs)</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="start-btn">&#9654; New Game</button>
+    <button class="btn btn-outline" id="hint-btn">&#128161; Hint (&#8722;5 pts)</button>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress" style="width:0%"></div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<div class="hint-panel" id="hint-panel">
+  <div class="hint-cat" id="hint-cat"></div>
+  <div class="hint-term" id="hint-term"></div>
+  <div class="hint-def" id="hint-def"></div>
+</div>
+
+<div class="win-screen" id="win-screen">
+  <div class="win-emoji" id="win-emoji">&#127942;</div>
+  <div class="win-title" id="win-title">Well done!</div>
+  <div class="win-sub" id="win-sub"></div>
+  <button class="btn btn-primary" onclick="startGame()">&#8617; Play Again</button>
+</div>
+
+<script>
+const ALL_CARDS = [
+  { id: 1,  icon: '\uD83E\uDD16', term: 'Financial AI',        definition: 'Algorithm that analyzes banking data to advise customers in real time.',               category: 'AI',       cat: 'ai' },
+  { id: 2,  icon: '\uD83E\uDDE0', term: 'Machine Learning',     definition: 'Automated learning that detects spending habits without explicit programming rules.',   category: 'AI',       cat: 'ai' },
+  { id: 3,  icon: '\uD83D\uDCAC', term: 'Banking Chatbot',      definition: 'Conversational assistant that handles customer queries 24/7 via text or voice.',       category: 'AI',       cat: 'ai' },
+  { id: 4,  icon: '\uD83D\uDD2E', term: 'Predictive Analytics', definition: 'Forecasting future financial behaviors using historical transaction data.',             category: 'AI',       cat: 'ai' },
+  { id: 5,  icon: '\uD83C\uDFAF', term: 'Personalization',      definition: 'Tailoring every recommendation to the unique financial profile of each customer.',     category: 'AI',       cat: 'ai' },
+  { id: 6,  icon: '\uD83D\uDCE1', term: 'Real-Time Insights',   definition: 'Instant financial guidance triggered by live account activity and transaction events.', category: 'AI',       cat: 'ai' },
+  { id: 7,  icon: '\uD83D\uDCCA', term: 'Dynamic Budget',       definition: 'A spending plan that automatically adjusts to changes in income and expenses.',        category: 'Budget',   cat: 'budget' },
+  { id: 8,  icon: '\uD83C\uDFF7\uFE0F', term: 'Auto-Categorization', definition: 'Automatic tagging of transactions by type: food, travel, bills, entertainment.', category: 'Budget',   cat: 'budget' },
+  { id: 9,  icon: '\u26A1',       term: 'Overspend Alert',      definition: 'Real-time push notification triggered when a spending category limit is exceeded.',    category: 'Budget',   cat: 'budget' },
+  { id: 10, icon: '\uD83D\uDCC5', term: 'Cash Flow',            definition: 'Overview of money moving in and out of an account over a defined time period.',        category: 'Budget',   cat: 'budget' },
+  { id: 11, icon: '\uD83C\uDFAA', term: 'Impulse Spending',     definition: 'Unplanned emotional purchases — the primary target of AI-powered financial coaching.', category: 'Budget',   cat: 'budget' },
+  { id: 12, icon: '\uD83D\uDCC9', term: 'Spending Trend',       definition: 'Pattern of expenditure over time revealing habitual financial behaviors.',             category: 'Budget',   cat: 'budget' },
+  { id: 13, icon: '\uD83D\uDCC8', term: 'Credit Score',         definition: 'A numeric rating (300-850) evaluating a borrower\'s likelihood of repayment.',        category: 'Credit',   cat: 'credit' },
+  { id: 14, icon: '\uD83D\uDCB3', term: 'Utilization Rate',     definition: 'Ratio of balance to credit limit — keeping it under 30% boosts your score.',          category: 'Credit',   cat: 'credit' },
+  { id: 15, icon: '\uD83C\uDFE6', term: 'Cash Advance',         definition: 'Short-term loan bridging the gap between paychecks to cover unexpected expenses.',     category: 'Credit',   cat: 'credit' },
+  { id: 16, icon: '\uD83D\uDCDC', term: 'Credit History',       definition: 'Complete record of a customer\'s borrowing and repayment behavior over time.',        category: 'Credit',   cat: 'credit' },
+  { id: 17, icon: '\u2696\uFE0F', term: 'Debt-to-Income',       definition: 'Ratio measuring how much of gross income is consumed by existing debt obligations.',   category: 'Credit',   cat: 'credit' },
+  { id: 18, icon: '\uD83D\uDD12', term: '256-bit Encryption',   definition: 'AES standard that protects banking data from any interception or unauthorized access.', category: 'Security', cat: 'security' },
+  { id: 19, icon: '\uD83D\uDD17', term: 'Open Banking',         definition: 'Standardized APIs allowing third parties to access bank data with customer consent.',  category: 'Security', cat: 'security' },
+  { id: 20, icon: '\uD83D\uDEE1\uFE0F', term: 'PCI-DSS',        definition: 'International security standard governing the handling of payment card data.',         category: 'Security', cat: 'security' },
+  { id: 21, icon: '\uD83D\uDC41\uFE0F', term: 'Read-Only Access', definition: 'Bank connection limited to viewing only — no transactions can be initiated.',        category: 'Security', cat: 'security' },
+  { id: 22, icon: '\uD83D\uDD11', term: 'MFA Authentication',   definition: 'Multi-factor verification adding extra identity checks before granting account access.', category: 'Security', cat: 'security' },
+  { id: 23, icon: '\uD83D\uDC37', term: 'Smart Save',           definition: 'AI determines the optimal weekly savings amount based on your income and spending.',   category: 'Savings',  cat: 'savings' },
+  { id: 24, icon: '\uD83D\uDD04', term: 'Round-Up Savings',     definition: 'Rounds each purchase up to the nearest dollar and deposits the difference.',           category: 'Savings',  cat: 'savings' },
+  { id: 25, icon: '\uD83D\uDCE6', term: 'FDIC Insurance',       definition: 'US government guarantee covering deposits up to $250,000 per insured institution.',   category: 'Savings',  cat: 'savings' },
+  { id: 26, icon: '\uD83D\uDCB0', term: 'APY',                  definition: 'Annual Percentage Yield — effective yearly return factoring in compound interest.',    category: 'Savings',  cat: 'savings' },
+];
+
+let cards = [], flipped = [], matched = [], moves = 0, score = 100, numPairs = 6;
+let timerInterval = null, seconds = 0, gameActive = false, hintTimeout = null;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
+
+function startGame() {
+  document.getElementById('win-screen').classList.remove('show');
+  clearInterval(timerInterval);
+  seconds = 0; moves = 0; score = 100; matched = []; flipped = []; gameActive = false;
+  updateStats();
+  document.getElementById('progress').style.width = '0%';
+  const selected = shuffle(ALL_CARDS).slice(0, numPairs);
+  cards = shuffle([...selected, ...selected.map(c => ({...c, uid: c.id + '_b'}))]);
+  renderBoard();
+  gameActive = true;
+  timerInterval = setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds / 60), s = seconds % 60;
+    document.getElementById('timer').textContent = m + ':' + String(s).padStart(2, '0');
+  }, 1000);
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  if (numPairs <= 6) board.style.gridTemplateColumns = 'repeat(4, 1fr)';
+  else if (numPairs <= 10) board.style.gridTemplateColumns = 'repeat(5, 1fr)';
+  else board.style.gridTemplateColumns = 'repeat(6, 1fr)';
+  cards.forEach((card, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap';
+    wrap.dataset.index = i;
+    wrap.innerHTML =
+      '<div class="card-inner">' +
+        '<div class="card-face card-back-face">' +
+          '<div class="logo">\uD83D\uDCB8</div>' +
+          '<div class="brand">CLEO</div>' +
+        '</div>' +
+        '<div class="card-face card-front-face">' +
+          '<span class="card-icon">' + card.icon + '</span>' +
+          '<span class="card-category cat-' + card.cat + '">' + card.category + '</span>' +
+          '<div class="card-term">' + card.term + '</div>' +
+          '<div class="card-definition">' + card.definition + '</div>' +
+        '</div>' +
+      '</div>';
+    wrap.addEventListener('click', () => flipCard(i, wrap, card));
+    board.appendChild(wrap);
+  });
+}
+
+function flipCard(i, wrap, card) {
+  if (!gameActive || flipped.length >= 2) return;
+  if (wrap.classList.contains('flipped') || wrap.classList.contains('matched')) return;
+  wrap.classList.add('flipped');
+  flipped.push({ i, wrap, card });
+  if (flipped.length === 2) {
+    moves++;
+    updateStats();
+    const [a, b] = flipped;
+    if (a.card.id === b.card.id) {
+      setTimeout(() => {
+        a.wrap.classList.add('matched');
+        b.wrap.classList.add('matched');
+        matched.push(a.card.id);
+        flipped = [];
+        updateStats();
+        showHint(a.card);
+        document.getElementById('progress').style.width = (matched.length / numPairs * 100) + '%';
+        if (matched.length === numPairs) endGame();
+      }, 600);
+    } else {
+      score = Math.max(0, score - 2);
+      setTimeout(() => {
+        a.wrap.classList.remove('flipped');
+        b.wrap.classList.remove('flipped');
+        flipped = [];
+        updateStats();
+      }, 1000);
+    }
+  }
+}
+
+function updateStats() {
+  document.getElementById('moves').textContent = moves;
+  document.getElementById('pairs').textContent = matched.length + '/' + numPairs;
+  document.getElementById('score').textContent = score;
+}
+
+function showHint(card) {
+  const p = document.getElementById('hint-panel');
+  const catEl = document.getElementById('hint-cat');
+  catEl.className = 'hint-cat cat-' + card.cat;
+  catEl.textContent = card.category;
+  document.getElementById('hint-term').textContent = card.icon + ' ' + card.term;
+  document.getElementById('hint-def').textContent = card.definition;
+  p.classList.add('show');
+  clearTimeout(hintTimeout);
+  hintTimeout = setTimeout(() => p.classList.remove('show'), 5000);
+}
+
+document.getElementById('hint-btn').addEventListener('click', () => {
+  if (!gameActive || matched.length >= numPairs) return;
+  score = Math.max(0, score - 5);
+  const unmatched = document.querySelectorAll('.card-wrap:not(.matched):not(.flipped)');
+  unmatched.forEach(c => c.classList.add('flipped'));
+  setTimeout(() => {
+    unmatched.forEach(c => { if (!c.classList.contains('matched')) c.classList.remove('flipped'); });
+    flipped = [];
+  }, 1500);
+  updateStats();
+});
+
+function endGame() {
+  clearInterval(timerInterval);
+  gameActive = false;
+  const speedBonus = Math.max(0, 120 - seconds);
+  const effBonus = Math.max(0, numPairs * 3 - moves);
+  const final = score + speedBonus + effBonus;
+  const emoji = final > 150 ? '\uD83C\uDFC6' : final > 100 ? '\u2B50' : '\uD83C\uDF93';
+  const msg = final > 150
+    ? "Outstanding! You're ready to advise clients on AI-powered financial tools."
+    : final > 100
+    ? 'Great grasp of the key concepts in intelligent banking!'
+    : 'Keep practicing — every round reinforces your knowledge.';
+  document.getElementById('win-emoji').textContent = emoji;
+  document.getElementById('win-title').textContent = 'Score: ' + final;
+  document.getElementById('win-sub').textContent = msg + '\n\u23F1 ' + Math.floor(seconds/60) + 'm' + (seconds%60) + 's \u00B7 ' + moves + ' attempts';
+  document.getElementById('win-screen').classList.add('show');
+}
+
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    numPairs = parseInt(btn.dataset.pairs);
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click', startGame);
+</script>
+</body>
+</html>
