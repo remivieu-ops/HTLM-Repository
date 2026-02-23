@@ -1,609 +1,901 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#0a0d1a">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cleo Memory — Banking Training</title>
-</head>
-<body style="background:#0a0d1a;color:#e8edf8;margin:0">
-
+<title>MG Motor — Repository</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,300;1,400&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
   :root {
-    --bg: #0a0d1a;
-    --surface: #111627;
-    --card-back: #1a2240;
-    --border: #1f2e55;
-    --accent: #00e5b4;
-    --accent2: #7b5cf0;
-    --accent3: #ff6b35;
-    --text: #e8edf8;
-    --muted: #5a6a8a;
-    --gold: #ffd166;
-    --font-display: 'Syne', 'Trebuchet MS', 'Arial Black', system-ui, sans-serif;
-    --font-mono: 'DM Mono', 'Courier New', monospace;
+    --mg-red:       #C8102E;
+    --mg-red-hover: #a50d25;
+    --mg-black:     #1A1A1A;
+    --mg-white:     #FFFFFF;
+    --mg-gray-bg:   #F5F5F5;
+    --mg-gray-line: #E0E0E0;
+    --mg-gray-text: #666666;
+    --mg-gray-mid:  #999999;
+    --font-main:    'Roboto', sans-serif;
+    --font-cond:    'Roboto Condensed', sans-serif;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: var(--font-display);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
+    font-family: var(--font-main);
+    background: var(--mg-white);
+    color: var(--mg-black);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
   }
 
-  body::before {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--mg-white);
+    border-bottom: 1px solid var(--mg-gray-line);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .mg-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .mg-logo-mark {
+    width: 44px;
+    height: 44px;
+    background: var(--mg-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .mg-logo-name {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mg-black);
+    line-height: 1.2;
+  }
+
+  .mg-logo-name span {
+    display: block;
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--mg-gray-text);
+    letter-spacing: 0.08em;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav-item {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mg-gray-text);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav-item:hover { color: var(--mg-black); }
+  .nav-item.active { color: var(--mg-red); font-weight: 700; border-bottom-color: var(--mg-red); }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--mg-gray-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--mg-gray-text);
+    background: none;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+  .btn-icon:hover { border-color: var(--mg-red); color: var(--mg-red); }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: var(--mg-red);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--mg-red-hover); }
+
+  /* BREADCRUMB */
+  .breadcrumb-bar {
+    background: var(--mg-gray-bg);
+    border-bottom: 1px solid var(--mg-gray-line);
+  }
+  .breadcrumb-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 9px 32px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--mg-gray-mid);
+  }
+  .breadcrumb-inner a { color: var(--mg-gray-mid); text-decoration: none; transition: color 0.15s; }
+  .breadcrumb-inner a:hover { color: var(--mg-red); }
+  .breadcrumb-inner .sep { color: var(--mg-gray-line); margin: 0 2px; }
+  .breadcrumb-inner .current { color: var(--mg-black); font-weight: 500; }
+
+  /* HERO */
+  .hero {
+    background: var(--mg-black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
     content: '';
-    position: fixed;
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 4px;
+    background: var(--mg-red);
+  }
+
+  .hero-pattern {
+    position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(123,92,240,.12) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,229,180,.08) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,107,53,.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg,  rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px);
   }
 
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
+  .hero-inner {
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 32px 20px 60px;
-  }
-
-  header { text-align: center; margin-bottom: 40px; }
-
-  .logo-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    font-family: var(--font-mono);
-  }
-
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -.02em;
-    margin-bottom: 12px;
-  }
-
-  h1 span {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtitle { color: var(--muted); font-size: 15px; font-family: var(--font-mono); }
-
-  .stats-bar {
+    padding: 52px 32px 56px;
+    position: relative;
+    z-index: 2;
     display: flex;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: space-between;
     gap: 32px;
-    margin-bottom: 32px;
     flex-wrap: wrap;
   }
 
-  .stat { text-align: center; }
-
-  .stat-val {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+  .hero-tag {
+    display: inline-block;
+    font-family: var(--font-cond);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mg-red);
+    border: 1px solid rgba(200,16,46,0.4);
+    background: rgba(200,16,46,0.08);
+    padding: 4px 12px;
+    margin-bottom: 16px;
   }
 
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
+  .hero-title {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: clamp(34px, 5vw, 56px);
     text-transform: uppercase;
-    letter-spacing: .1em;
-    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    color: white;
+    line-height: 1.0;
+    margin-bottom: 10px;
+  }
+
+  .hero-sub {
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 36px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .h-stat-n {
+    font-family: var(--font-cond);
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+  }
+
+  .h-stat-l {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     margin-top: 4px;
   }
 
-  .controls {
+  /* MAIN */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 32px 72px;
+  }
+
+  .section-header {
     display: flex;
-    justify-content: center;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--mg-gray-line);
+    gap: 16px;
     flex-wrap: wrap;
   }
 
-  .btn {
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: none;
-    font-family: var(--font-display);
-    font-size: 14px;
+  .section-title {
+    font-family: var(--font-cond);
+    font-size: 18px;
     font-weight: 700;
-    cursor: pointer;
-    transition: all .2s;
-    letter-spacing: .02em;
-  }
-
-  .btn-primary { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(123,92,240,.4); }
-  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
-  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-
-  .diff-btns {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--mg-black);
     display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
   }
 
-  .diff-btn {
-    padding: 6px 18px;
-    border-radius: 6px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--font-mono);
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 18px;
+    background: var(--mg-red);
+    flex-shrink: 0;
+  }
+
+  .section-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+  .filter-chip {
+    font-family: var(--font-main);
     font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border: 1px solid var(--mg-gray-line);
+    border-radius: 100px;
+    background: none;
+    color: var(--mg-gray-text);
     cursor: pointer;
-    transition: all .2s;
+    transition: all 0.15s;
   }
+  .filter-chip:hover { border-color: var(--mg-black); color: var(--mg-black); }
+  .filter-chip.active { background: var(--mg-red); border-color: var(--mg-red); color: white; font-weight: 700; }
 
-  .diff-btn.active, .diff-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(255,209,102,.05);
-  }
-
-  .progress-bar-wrap {
-    height: 3px;
-    background: var(--border);
-    border-radius: 3px;
-    margin-bottom: 32px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    border-radius: 3px;
-    transition: width .4s ease;
-  }
-
-  .board {
+  /* FOLDER GRID */
+  .folders-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--mg-gray-line);
+    border: 1px solid var(--mg-gray-line);
+    margin-bottom: 48px;
+  }
+
+  .folder-card {
+    background: var(--mg-white);
+    padding: 30px 26px 26px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    animation: fadeUp 0.45s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .folder-card:nth-child(1) { animation-delay: 0.05s; }
+  .folder-card:nth-child(2) { animation-delay: 0.10s; }
+  .folder-card:nth-child(3) { animation-delay: 0.15s; }
+  .folder-card:nth-child(4) { animation-delay: 0.20s; }
+  .folder-card:nth-child(5) { animation-delay: 0.25s; }
+  .folder-card:nth-child(6) { animation-delay: 0.30s; }
+
+  .folder-card:hover { background: var(--mg-gray-bg); }
+
+  .folder-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--mg-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+  .folder-card:hover::before { transform: scaleX(1); }
+
+  .folder-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .folder-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mg-gray-bg);
+    border: 1px solid var(--mg-gray-line);
+    transition: all 0.2s;
+  }
+  .folder-card:hover .folder-icon { border-color: var(--mg-red); background: rgba(200,16,46,0.04); }
+  .folder-icon svg { width: 22px; height: 22px; color: var(--mg-gray-text); transition: color 0.2s; }
+  .folder-card:hover .folder-icon svg { color: var(--mg-red); }
+
+  .folder-count-tag {
+    font-family: var(--font-cond);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mg-gray-mid);
+    background: var(--mg-gray-bg);
+    border: 1px solid var(--mg-gray-line);
+    padding: 3px 8px;
+  }
+
+  .folder-name {
+    font-family: var(--font-cond);
+    font-size: 21px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--mg-black);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .folder-desc {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--mg-gray-text);
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+
+  .folder-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    border-top: 1px solid var(--mg-gray-line);
+  }
+
+  .folder-stats { display: flex; gap: 20px; }
+  .f-stat { display: flex; flex-direction: column; gap: 2px; }
+  .f-n { font-family: var(--font-cond); font-size: 20px; font-weight: 700; color: var(--mg-black); line-height: 1; }
+  .f-l { font-family: var(--font-main); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mg-gray-mid); }
+
+  .folder-arrow {
+    width: 32px;
+    height: 32px;
+    background: var(--mg-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .folder-card:hover .folder-arrow { background: var(--mg-red); }
+
+  /* TABLE */
+  .table-wrap {
+    border: 1px solid var(--mg-gray-line);
+    background: var(--mg-white);
+    overflow: hidden;
+  }
+
+  .t-head {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 80px 100px 120px;
+    background: var(--mg-gray-bg);
+    border-bottom: 2px solid var(--mg-gray-line);
+    padding: 0 20px;
+  }
+
+  .th {
+    padding: 11px 8px;
+    font-family: var(--font-cond);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mg-gray-mid);
+  }
+
+  .t-row {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 80px 100px 120px;
+    border-bottom: 1px solid var(--mg-gray-line);
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    animation: fadeUp 0.45s both;
+  }
+  .t-row:nth-child(1) { animation-delay: 0.3s; }
+  .t-row:nth-child(2) { animation-delay: 0.35s; }
+  .t-row:nth-child(3) { animation-delay: 0.4s; }
+  .t-row:nth-child(4) { animation-delay: 0.45s; }
+  .t-row:nth-child(5) { animation-delay: 0.5s; }
+  .t-row:last-child { border-bottom: none; }
+  .t-row:hover { background: var(--mg-gray-bg); }
+
+  .td {
+    padding: 14px 8px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    color: var(--mg-gray-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .td.name { color: var(--mg-black); font-weight: 500; transition: color 0.15s; }
+  .t-row:hover .td.name { color: var(--mg-red); }
+
+  .f-ind { width: 3px; height: 26px; flex-shrink: 0; }
+
+  .ftype {
+    font-family: var(--font-cond);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border: 1px solid var(--mg-gray-line);
+    color: var(--mg-gray-text);
+    background: var(--mg-gray-bg);
+  }
+
+  .ftag {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--mg-gray-text);
+    padding: 2px 10px;
+    background: var(--mg-gray-bg);
+    border: 1px solid var(--mg-gray-line);
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--mg-black);
+    border-top: 4px solid var(--mg-red);
+  }
+
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
     gap: 14px;
   }
 
-  @media(max-width: 600px) {
-    .board { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  }
-
-  .card-wrap { aspect-ratio: 2/3; perspective: 800px; cursor: pointer; }
-
-  .card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform .5s cubic-bezier(.4,0,.2,1);
-  }
-
-  .card-wrap.flipped .card-inner,
-  .card-wrap.matched .card-inner { transform: rotateY(180deg); }
-
-  .card-face {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden;
-    border-radius: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 10px;
-    border: 1.5px solid var(--border);
-  }
-
-  .card-back-face { background: var(--card-back); overflow: hidden; }
-
-  .card-back-face::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg, transparent, transparent 10px,
-      rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 11px
-    );
-  }
-
-  .card-back-face .logo { font-size: 2rem; margin-bottom: 8px; }
-  .card-back-face .brand { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
-
-  .card-front-face {
-    background: var(--surface);
-    transform: rotateY(180deg);
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
-  }
-
-  .card-icon { font-size: 2rem; line-height: 1; }
-
-  .card-category {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: .15em;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 500;
-  }
-
-  .card-term { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
-
-  .card-definition {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    line-height: 1.4;
-  }
-
-  .cat-ai       { background: rgba(123,92,240,.15); color: var(--accent2); border: 1px solid rgba(123,92,240,.3); }
-  .cat-budget   { background: rgba(0,229,180,.15);  color: var(--accent);  border: 1px solid rgba(0,229,180,.3); }
-  .cat-credit   { background: rgba(255,107,53,.15); color: var(--accent3); border: 1px solid rgba(255,107,53,.3); }
-  .cat-security { background: rgba(255,209,102,.15);color: var(--gold);    border: 1px solid rgba(255,209,102,.3); }
-  .cat-savings  { background: rgba(100,200,255,.15);color: #64c8ff;        border: 1px solid rgba(100,200,255,.3); }
-
-  .card-wrap.matched .card-front-face {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, rgba(0,229,180,.1), rgba(123,92,240,.1));
-  }
-
-  .card-wrap.matched .card-front-face::after {
-    content: '✓';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--accent);
-    color: #000;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 10px;
-    font-weight: 800;
+  .footer-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--mg-red);
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
-  .win-screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,13,26,.95);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 40px;
-    backdrop-filter: blur(8px);
-  }
-
-  .win-screen.show { display: flex; animation: fadeIn .5s ease; }
-
-  @keyframes fadeIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
-
-  .win-emoji { font-size: 4rem; margin-bottom: 16px; }
-
-  .win-title {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-  }
-
-  .win-sub {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    margin-bottom: 32px;
-    font-size: 14px;
-    white-space: pre-line;
-    line-height: 1.7;
-  }
-
-  .hint-panel {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    max-width: 280px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all .3s;
-    pointer-events: none;
-    z-index: 50;
-  }
-
-  .hint-panel.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-
-  .hint-cat {
-    font-size: 10px;
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    margin-bottom: 6px;
-  }
-
-  .hint-term { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-
-  .hint-def {
+  .footer-text {
+    font-family: var(--font-main);
     font-size: 12px;
-    color: var(--muted);
-    line-height: 1.5;
-    font-family: var(--font-mono);
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.6;
+  }
+
+  .footer-text strong { color: rgba(255,255,255,0.75); font-weight: 500; }
+
+  .footer-links { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+
+  .footer-link {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-link:hover { color: var(--mg-red); }
+
+  @media (max-width: 900px) {
+    .folders-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { display: none; }
+    .header-nav { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .folders-grid { grid-template-columns: 1fr; }
+    .header-inner, .breadcrumb-inner, .hero-inner, .main, .footer-inner { padding-left: 16px; padding-right: 16px; }
+    .t-head, .t-row { grid-template-columns: 2fr 1fr; }
+    .th:nth-child(n+3), .td:nth-child(n+3) { display: none; }
   }
 </style>
+</head>
+<body>
 
-<div class="wrapper">
-  <header>
-    <div class="logo-tag">🤖 AI Banking Training</div>
-    <h1>Cleo <span>Memory</span></h1>
-    <p class="subtitle">Match the key concepts of intelligent finance</p>
-  </header>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a class="mg-logo" href="#">
+      <div class="mg-logo-mark">
+        <svg viewBox="0 0 32 22" fill="none" width="24" height="17" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0L5.5 22H10L13.5 8.5L17 22H21.5L27 0H22.5L19 14L16 2L13 14L9.5 0H0Z" fill="white"/>
+          <path d="M28.5 0V22H32V13.5H30V8.5H32V0H28.5Z" fill="white"/>
+        </svg>
+      </div>
+      <div class="mg-logo-name">
+        MG Motor
+        <span>Repository interne</span>
+      </div>
+    </a>
 
-  <div class="stats-bar">
-    <div class="stat">
-      <div class="stat-val" id="moves">0</div>
-      <div class="stat-label">Attempts</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="pairs">0</div>
-      <div class="stat-label">Pairs Found</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="timer">0:00</div>
-      <div class="stat-label">Time</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" id="score">—</div>
-      <div class="stat-label">Score</div>
+    <nav class="header-nav">
+      <span class="nav-item active">Repository</span>
+      <span class="nav-item">Partagés avec moi</span>
+      <span class="nav-item">Favoris</span>
+      <span class="nav-item">Archives</span>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-icon" title="Rechercher">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="btn-primary">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nouveau
+      </button>
     </div>
   </div>
+</header>
 
-  <div class="diff-btns">
-    <button class="diff-btn active" data-pairs="6">Beginner (6 pairs)</button>
-    <button class="diff-btn" data-pairs="10">Intermediate (10 pairs)</button>
-    <button class="diff-btn" data-pairs="16">Expert (16 pairs)</button>
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner">
+    <a href="#">MG Motor France</a>
+    <span class="sep">›</span>
+    <span class="current">Repository interne</span>
   </div>
-
-  <div class="controls">
-    <button class="btn btn-primary" id="start-btn">&#9654; New Game</button>
-    <button class="btn btn-outline" id="hint-btn">&#128161; Hint (&#8722;5 pts)</button>
-  </div>
-
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress" style="width:0%"></div>
-  </div>
-
-  <div class="board" id="board"></div>
 </div>
 
-<div class="hint-panel" id="hint-panel">
-  <div class="hint-cat" id="hint-cat"></div>
-  <div class="hint-term" id="hint-term"></div>
-  <div class="hint-def" id="hint-def"></div>
-</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Accès collaborateurs</div>
+      <h1 class="hero-title">Document<br>Repository</h1>
+      <p class="hero-sub">Gestion centralisée des documents MG Motor France</p>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="h-stat-n">6</div>
+        <div class="h-stat-l">Dossiers</div>
+      </div>
+      <div>
+        <div class="h-stat-n">247</div>
+        <div class="h-stat-l">Documents</div>
+      </div>
+      <div>
+        <div class="h-stat-n">18</div>
+        <div class="h-stat-l">Récents</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="win-screen" id="win-screen">
-  <div class="win-emoji" id="win-emoji">&#127942;</div>
-  <div class="win-title" id="win-title">Well done!</div>
-  <div class="win-sub" id="win-sub"></div>
-  <button class="btn btn-primary" onclick="startGame()">&#8617; Play Again</button>
-</div>
+<!-- MAIN -->
+<main class="main">
+
+  <div class="section-header">
+    <h2 class="section-title">Dossiers</h2>
+    <div class="section-actions">
+      <button class="filter-chip active">Tous</button>
+      <button class="filter-chip">Actifs</button>
+      <button class="filter-chip">Archivés</button>
+      <button class="filter-chip">Partagés</button>
+    </div>
+  </div>
+
+  <div class="folders-grid">
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="folder-count-tag">54 fichiers</span>
+      </div>
+      <div class="folder-name">Product</div>
+      <div class="folder-desc">Fiches techniques, spécifications véhicules, roadmap gamme MG et documents de référence produit.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">54</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">3</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6z"/></svg>
+        </div>
+        <span class="folder-count-tag">38 fichiers</span>
+      </div>
+      <div class="folder-name">News</div>
+      <div class="folder-desc">Communiqués de presse, revue de presse, calendrier éditorial et archives de publications officielles.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">38</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">7</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <span class="folder-count-tag">62 fichiers</span>
+      </div>
+      <div class="folder-name">Administration</div>
+      <div class="folder-desc">Organigramme, politiques RH, procédures internes, comptes-rendus de réunions et gouvernance.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">62</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">2</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span class="folder-count-tag">41 fichiers</span>
+      </div>
+      <div class="folder-name">Legal</div>
+      <div class="folder-desc">Contrats, CGU, conformité RGPD, propriété intellectuelle, certifications et dossiers réglementaires.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">41</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">1</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <span class="folder-count-tag">33 fichiers</span>
+      </div>
+      <div class="folder-name">Sales</div>
+      <div class="folder-desc">Objectifs commerciaux, tarification, rapports de performance, outils de vente et données réseau.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">33</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">4</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="folder-card">
+      <div class="folder-top">
+        <div class="folder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </div>
+        <span class="folder-count-tag">19 fichiers</span>
+      </div>
+      <div class="folder-name">Marketing</div>
+      <div class="folder-desc">Charte graphique, assets visuels, campagnes publicitaires, briefs créatifs et rapports d'activation.</div>
+      <div class="folder-footer">
+        <div class="folder-stats">
+          <div class="f-stat"><span class="f-n">19</span><span class="f-l">Fichiers</span></div>
+          <div class="f-stat"><span class="f-n">1</span><span class="f-l">Récents</span></div>
+        </div>
+        <div class="folder-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECENT DOCS -->
+  <div class="section-header">
+    <h2 class="section-title">Documents récents</h2>
+    <span style="font-size:12px;color:var(--mg-gray-mid);font-family:var(--font-main)">Actualisé il y a 12 min</span>
+  </div>
+
+  <div class="table-wrap">
+    <div class="t-head">
+      <div class="th">Nom</div>
+      <div class="th">Dossier</div>
+      <div class="th">Type</div>
+      <div class="th">Modifié</div>
+      <div class="th">Auteur</div>
+    </div>
+
+    <div class="t-row">
+      <div class="td name"><div class="f-ind" style="background:var(--mg-red)"></div>MG4 Electric — Fiche Technique FR 2025</div>
+      <div class="td"><span class="ftag">Product</span></div>
+      <div class="td"><span class="ftype">PDF</span></div>
+      <div class="td">Il y a 2h</div>
+      <div class="td">A. Dupont</div>
+    </div>
+
+    <div class="t-row">
+      <div class="td name"><div class="f-ind" style="background:var(--mg-black)"></div>CP — Lancement MG S5 EV Printemps 2025</div>
+      <div class="td"><span class="ftag">News</span></div>
+      <div class="td"><span class="ftype">DOCX</span></div>
+      <div class="td">Il y a 5h</div>
+      <div class="td">M. Bernard</div>
+    </div>
+
+    <div class="t-row">
+      <div class="td name"><div class="f-ind" style="background:var(--mg-gray-mid)"></div>Contrats Concessionnaires — Template 2025</div>
+      <div class="td"><span class="ftag">Legal</span></div>
+      <div class="td"><span class="ftype">PDF</span></div>
+      <div class="td">Hier</div>
+      <div class="td">S. Martin</div>
+    </div>
+
+    <div class="t-row">
+      <div class="td name"><div class="f-ind" style="background:var(--mg-black)"></div>Objectifs Q1 — Rapport Performance Réseau</div>
+      <div class="td"><span class="ftag">Sales</span></div>
+      <div class="td"><span class="ftype">XLSX</span></div>
+      <div class="td">Il y a 2j</div>
+      <div class="td">L. Petit</div>
+    </div>
+
+    <div class="t-row">
+      <div class="td name"><div class="f-ind" style="background:var(--mg-red)"></div>Brand Guidelines MG 2025 — Visual Kit</div>
+      <div class="td"><span class="ftag">Marketing</span></div>
+      <div class="td"><span class="ftype">ZIP</span></div>
+      <div class="td">Il y a 3j</div>
+      <div class="td">C. Rousseau</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <svg viewBox="0 0 32 22" fill="none" width="20" height="14" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0L5.5 22H10L13.5 8.5L17 22H21.5L27 0H22.5L19 14L16 2L13 14L9.5 0H0Z" fill="white"/>
+          <path d="M28.5 0V22H32V13.5H30V8.5H32V0H28.5Z" fill="white"/>
+        </svg>
+      </div>
+      <div class="footer-text">
+        <strong>MG Motor France</strong> — Repository interne<br>
+        © 2025 SAIC Motor France SAS — Accès restreint aux collaborateurs autorisés
+      </div>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="#">Support IT</a>
+      <a class="footer-link" href="#">Politique de données</a>
+      <a class="footer-link" href="#">Accès administrateur</a>
+      <a class="footer-link" href="#">mgmotor.fr</a>
+    </div>
+  </div>
+</footer>
 
 <script>
-const ALL_CARDS = [
-  { id: 1,  icon: '\uD83E\uDD16', term: 'Financial AI',        definition: 'Algorithm that analyzes banking data to advise customers in real time.',               category: 'AI',       cat: 'ai' },
-  { id: 2,  icon: '\uD83E\uDDE0', term: 'Machine Learning',     definition: 'Automated learning that detects spending habits without explicit programming rules.',   category: 'AI',       cat: 'ai' },
-  { id: 3,  icon: '\uD83D\uDCAC', term: 'Banking Chatbot',      definition: 'Conversational assistant that handles customer queries 24/7 via text or voice.',       category: 'AI',       cat: 'ai' },
-  { id: 4,  icon: '\uD83D\uDD2E', term: 'Predictive Analytics', definition: 'Forecasting future financial behaviors using historical transaction data.',             category: 'AI',       cat: 'ai' },
-  { id: 5,  icon: '\uD83C\uDFAF', term: 'Personalization',      definition: 'Tailoring every recommendation to the unique financial profile of each customer.',     category: 'AI',       cat: 'ai' },
-  { id: 6,  icon: '\uD83D\uDCE1', term: 'Real-Time Insights',   definition: 'Instant financial guidance triggered by live account activity and transaction events.', category: 'AI',       cat: 'ai' },
-  { id: 7,  icon: '\uD83D\uDCCA', term: 'Dynamic Budget',       definition: 'A spending plan that automatically adjusts to changes in income and expenses.',        category: 'Budget',   cat: 'budget' },
-  { id: 8,  icon: '\uD83C\uDFF7\uFE0F', term: 'Auto-Categorization', definition: 'Automatic tagging of transactions by type: food, travel, bills, entertainment.', category: 'Budget',   cat: 'budget' },
-  { id: 9,  icon: '\u26A1',       term: 'Overspend Alert',      definition: 'Real-time push notification triggered when a spending category limit is exceeded.',    category: 'Budget',   cat: 'budget' },
-  { id: 10, icon: '\uD83D\uDCC5', term: 'Cash Flow',            definition: 'Overview of money moving in and out of an account over a defined time period.',        category: 'Budget',   cat: 'budget' },
-  { id: 11, icon: '\uD83C\uDFAA', term: 'Impulse Spending',     definition: 'Unplanned emotional purchases — the primary target of AI-powered financial coaching.', category: 'Budget',   cat: 'budget' },
-  { id: 12, icon: '\uD83D\uDCC9', term: 'Spending Trend',       definition: 'Pattern of expenditure over time revealing habitual financial behaviors.',             category: 'Budget',   cat: 'budget' },
-  { id: 13, icon: '\uD83D\uDCC8', term: 'Credit Score',         definition: 'A numeric rating (300-850) evaluating a borrower\'s likelihood of repayment.',        category: 'Credit',   cat: 'credit' },
-  { id: 14, icon: '\uD83D\uDCB3', term: 'Utilization Rate',     definition: 'Ratio of balance to credit limit — keeping it under 30% boosts your score.',          category: 'Credit',   cat: 'credit' },
-  { id: 15, icon: '\uD83C\uDFE6', term: 'Cash Advance',         definition: 'Short-term loan bridging the gap between paychecks to cover unexpected expenses.',     category: 'Credit',   cat: 'credit' },
-  { id: 16, icon: '\uD83D\uDCDC', term: 'Credit History',       definition: 'Complete record of a customer\'s borrowing and repayment behavior over time.',        category: 'Credit',   cat: 'credit' },
-  { id: 17, icon: '\u2696\uFE0F', term: 'Debt-to-Income',       definition: 'Ratio measuring how much of gross income is consumed by existing debt obligations.',   category: 'Credit',   cat: 'credit' },
-  { id: 18, icon: '\uD83D\uDD12', term: '256-bit Encryption',   definition: 'AES standard that protects banking data from any interception or unauthorized access.', category: 'Security', cat: 'security' },
-  { id: 19, icon: '\uD83D\uDD17', term: 'Open Banking',         definition: 'Standardized APIs allowing third parties to access bank data with customer consent.',  category: 'Security', cat: 'security' },
-  { id: 20, icon: '\uD83D\uDEE1\uFE0F', term: 'PCI-DSS',        definition: 'International security standard governing the handling of payment card data.',         category: 'Security', cat: 'security' },
-  { id: 21, icon: '\uD83D\uDC41\uFE0F', term: 'Read-Only Access', definition: 'Bank connection limited to viewing only — no transactions can be initiated.',        category: 'Security', cat: 'security' },
-  { id: 22, icon: '\uD83D\uDD11', term: 'MFA Authentication',   definition: 'Multi-factor verification adding extra identity checks before granting account access.', category: 'Security', cat: 'security' },
-  { id: 23, icon: '\uD83D\uDC37', term: 'Smart Save',           definition: 'AI determines the optimal weekly savings amount based on your income and spending.',   category: 'Savings',  cat: 'savings' },
-  { id: 24, icon: '\uD83D\uDD04', term: 'Round-Up Savings',     definition: 'Rounds each purchase up to the nearest dollar and deposits the difference.',           category: 'Savings',  cat: 'savings' },
-  { id: 25, icon: '\uD83D\uDCE6', term: 'FDIC Insurance',       definition: 'US government guarantee covering deposits up to $250,000 per insured institution.',   category: 'Savings',  cat: 'savings' },
-  { id: 26, icon: '\uD83D\uDCB0', term: 'APY',                  definition: 'Annual Percentage Yield — effective yearly return factoring in compound interest.',    category: 'Savings',  cat: 'savings' },
-];
-
-let cards = [], flipped = [], matched = [], moves = 0, score = 100, numPairs = 6;
-let timerInterval = null, seconds = 0, gameActive = false, hintTimeout = null;
-
-function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
-
-function startGame() {
-  document.getElementById('win-screen').classList.remove('show');
-  clearInterval(timerInterval);
-  seconds = 0; moves = 0; score = 100; matched = []; flipped = []; gameActive = false;
-  updateStats();
-  document.getElementById('progress').style.width = '0%';
-  const selected = shuffle(ALL_CARDS).slice(0, numPairs);
-  cards = shuffle([...selected, ...selected.map(c => ({...c, uid: c.id + '_b'}))]);
-  renderBoard();
-  gameActive = true;
-  timerInterval = setInterval(() => {
-    seconds++;
-    const m = Math.floor(seconds / 60), s = seconds % 60;
-    document.getElementById('timer').textContent = m + ':' + String(s).padStart(2, '0');
-  }, 1000);
-}
-
-function renderBoard() {
-  const board = document.getElementById('board');
-  board.innerHTML = '';
-  if (numPairs <= 6) board.style.gridTemplateColumns = 'repeat(4, 1fr)';
-  else if (numPairs <= 10) board.style.gridTemplateColumns = 'repeat(5, 1fr)';
-  else board.style.gridTemplateColumns = 'repeat(6, 1fr)';
-  cards.forEach((card, i) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'card-wrap';
-    wrap.dataset.index = i;
-    wrap.innerHTML =
-      '<div class="card-inner">' +
-        '<div class="card-face card-back-face">' +
-          '<div class="logo">\uD83D\uDCB8</div>' +
-          '<div class="brand">CLEO</div>' +
-        '</div>' +
-        '<div class="card-face card-front-face">' +
-          '<span class="card-icon">' + card.icon + '</span>' +
-          '<span class="card-category cat-' + card.cat + '">' + card.category + '</span>' +
-          '<div class="card-term">' + card.term + '</div>' +
-          '<div class="card-definition">' + card.definition + '</div>' +
-        '</div>' +
-      '</div>';
-    wrap.addEventListener('click', () => flipCard(i, wrap, card));
-    board.appendChild(wrap);
+  document.querySelectorAll('.filter-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
   });
-}
-
-function flipCard(i, wrap, card) {
-  if (!gameActive || flipped.length >= 2) return;
-  if (wrap.classList.contains('flipped') || wrap.classList.contains('matched')) return;
-  wrap.classList.add('flipped');
-  flipped.push({ i, wrap, card });
-  if (flipped.length === 2) {
-    moves++;
-    updateStats();
-    const [a, b] = flipped;
-    if (a.card.id === b.card.id) {
-      setTimeout(() => {
-        a.wrap.classList.add('matched');
-        b.wrap.classList.add('matched');
-        matched.push(a.card.id);
-        flipped = [];
-        updateStats();
-        showHint(a.card);
-        document.getElementById('progress').style.width = (matched.length / numPairs * 100) + '%';
-        if (matched.length === numPairs) endGame();
-      }, 600);
-    } else {
-      score = Math.max(0, score - 2);
-      setTimeout(() => {
-        a.wrap.classList.remove('flipped');
-        b.wrap.classList.remove('flipped');
-        flipped = [];
-        updateStats();
-      }, 1000);
-    }
-  }
-}
-
-function updateStats() {
-  document.getElementById('moves').textContent = moves;
-  document.getElementById('pairs').textContent = matched.length + '/' + numPairs;
-  document.getElementById('score').textContent = score;
-}
-
-function showHint(card) {
-  const p = document.getElementById('hint-panel');
-  const catEl = document.getElementById('hint-cat');
-  catEl.className = 'hint-cat cat-' + card.cat;
-  catEl.textContent = card.category;
-  document.getElementById('hint-term').textContent = card.icon + ' ' + card.term;
-  document.getElementById('hint-def').textContent = card.definition;
-  p.classList.add('show');
-  clearTimeout(hintTimeout);
-  hintTimeout = setTimeout(() => p.classList.remove('show'), 5000);
-}
-
-document.getElementById('hint-btn').addEventListener('click', () => {
-  if (!gameActive || matched.length >= numPairs) return;
-  score = Math.max(0, score - 5);
-  const unmatched = document.querySelectorAll('.card-wrap:not(.matched):not(.flipped)');
-  unmatched.forEach(c => c.classList.add('flipped'));
-  setTimeout(() => {
-    unmatched.forEach(c => { if (!c.classList.contains('matched')) c.classList.remove('flipped'); });
-    flipped = [];
-  }, 1500);
-  updateStats();
-});
-
-function endGame() {
-  clearInterval(timerInterval);
-  gameActive = false;
-  const speedBonus = Math.max(0, 120 - seconds);
-  const effBonus = Math.max(0, numPairs * 3 - moves);
-  const final = score + speedBonus + effBonus;
-  const emoji = final > 150 ? '\uD83C\uDFC6' : final > 100 ? '\u2B50' : '\uD83C\uDF93';
-  const msg = final > 150
-    ? "Outstanding! You're ready to advise clients on AI-powered financial tools."
-    : final > 100
-    ? 'Great grasp of the key concepts in intelligent banking!'
-    : 'Keep practicing — every round reinforces your knowledge.';
-  document.getElementById('win-emoji').textContent = emoji;
-  document.getElementById('win-title').textContent = 'Score: ' + final;
-  document.getElementById('win-sub').textContent = msg + '\n\u23F1 ' + Math.floor(seconds/60) + 'm' + (seconds%60) + 's \u00B7 ' + moves + ' attempts';
-  document.getElementById('win-screen').classList.add('show');
-}
-
-document.querySelectorAll('.diff-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    numPairs = parseInt(btn.dataset.pairs);
-  });
-});
-
-document.getElementById('start-btn').addEventListener('click', startGame);
 </script>
+
 </body>
 </html>
